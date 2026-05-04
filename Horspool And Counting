@@ -1,0 +1,146 @@
+1.Horspool
+==========
+#include <iostream>
+#include <string>
+#include <vector>
+
+using namespace std;
+
+int main() {
+    string text, pattern;
+
+    cout << "Enter Text (max 27 chars): ";
+    getline(cin, text);
+    if (text.length() > 27) text = text.substr(0, 27);
+    cout << "Enter Pattern: ";
+    getline(cin, pattern);
+
+    int n = text.length();
+    int m = pattern.length();
+
+    if (m > n) {
+        cout << "Pattern longer than text!" << endl;
+        return 0;
+    }
+
+    int shift[256];
+    for (int i = 0; i < 256; i++)
+        shift[i] = m;
+
+    for (int j = 0; j < m - 1; j++)
+        shift[(unsigned char)pattern[j]] = m - 1 - j;
+
+    cout << "\nShift Table (relevant entries):\n";
+    for (int i = 0; i < 256; i++) {
+        if (shift[i] != m)
+            cout << "'" << char(i) << "' : " << shift[i] << endl;
+    }
+
+    int i = m - 1;
+    int comparisons = 0;
+    int alignments = 0;
+
+    cout << "\n--- Matching Process ---\n";
+    while (i < n) {
+        alignments++;
+        cout << "\nAlignment " << alignments << ":\n" << text << endl;
+
+        for (int s = 0; s < i - (m - 1); s++) cout << " ";
+        cout << pattern << endl;
+
+        int k = 0;
+        while (k < m && pattern[m - 1 - k] == text[i - k]) {
+            comparisons++;
+            k++;
+        }
+
+        if (k == m) {
+            cout << "Pattern found at index: " << i - m + 1 << endl;
+            cout << "Total Comparisons: " << comparisons << endl;
+            cout << "Total Alignments: " << alignments << endl;
+            return 0;
+        } else {
+            comparisons++;
+            cout << "Mismatch at text[" << i - k << "]" << endl;
+            cout << "Shifting based on text[" << i << "] ('" << text[i] << "'): " << shift[(unsigned char)text[i]] << endl;
+            i += shift[(unsigned char)text[i]];
+        }
+    }
+
+    cout << "\nPattern not found\n";
+    cout << "Total Comparisons: " << comparisons << endl;
+    cout << "Total Alignments: " << alignments << endl;
+
+    return 0;
+}
+
+2.Counting:
+==========
+
+#include <iostream>
+using namespace std;
+
+int main()
+{
+    int n;
+    cout << "Enter number of elements: ";
+    cin >> n;
+
+    int A[n], Count[n], S[n];
+
+    cout << "Enter elements:\n";
+    for (int i = 0; i < n; i++)
+        cin >> A[i];
+
+
+    for (int i = 0; i < n; i++)
+        Count[i] = 0;
+
+    cout << "\nArray A[0.." << n - 1 << "]:\n";
+    for (int i = 0; i < n; i++)
+        cout << A[i] << " ";
+    cout << "\n";
+
+
+    cout << "\nInitially Count[]:\n";
+    for (int i = 0; i < n; i++)
+        cout << Count[i] << " ";
+    cout << "\n";
+
+
+    for (int i = 0; i < n - 1; i++)
+    {
+        for (int j = i + 1; j < n; j++)
+        {
+            if (A[i] < A[j])
+                Count[j]++;
+            else
+                Count[i]++;
+        }
+
+
+        cout << "\nAfter pass i = " << i << ":\n";
+        cout << "Count[]: ";
+        for (int k = 0; k < n; k++)
+            cout << Count[k] << " ";
+        cout << "\n";
+    }
+
+
+    cout << "\nFinal Count[]:\n";
+    for (int i = 0; i < n; i++)
+        cout << Count[i] << " ";
+    cout << "\n";
+
+
+    for (int i = 0; i < n; i++)
+        S[Count[i]] = A[i];
+
+
+    cout << "\nArray S[0.." << n - 1 << "]:\n";
+    for (int i = 0; i < n; i++)
+        cout << S[i] << " ";
+    cout << "\n";
+
+    return 0;
+}
