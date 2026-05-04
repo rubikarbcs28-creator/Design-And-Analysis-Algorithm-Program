@@ -1,0 +1,109 @@
+1.Search:
+========
+#include<iostream>
+#include<string>
+using namespace std;
+
+void bruteforce_visual(string T, string P) {
+    int n = T.length();
+    int m = P.length();
+    int total_comparisons = 0;
+    int total_alignments = 0;
+
+    for (int i = 0; i <= n - m; i++) {
+        total_alignments++;
+        cout << "Pass " << i << ":" << endl;
+        cout << "Text:    " << T << endl;
+        cout << "Pattern: ";
+        for (int k = 0; k < i; k++) cout << " ";
+        cout << P << endl;
+
+        cout << "checks:  ";
+        for (int k = 0; k < i; k++) cout << " ";
+
+        int j = 0;
+        while (j < m) {
+            total_comparisons++;
+            if (T[i + j] == P[j]) {
+                cout << "|";
+                j++;
+            } else {
+                cout << "x";
+                break;
+            }
+        }
+        cout << "\n" << endl;
+
+        if (j == m) {
+            cout << "Pattern in the index: " << i << endl;
+            cout << "Alignments: " << total_alignments << endl;
+            cout << "comparisons: " << total_comparisons << endl;
+            return;
+        }
+    }
+    cout << "Pattern not found" << endl;
+    cout << "Alignments: " << total_alignments << endl;
+    cout << "comparisons: " << total_comparisons << endl;
+}
+
+int main() {
+    string T, P;
+    cout << "Enter Your Text: "; getline(cin, T);
+    cout << "Enter the Pattern to search: "; getline(cin, P);
+    cout << endl;
+    bruteforce_visual(T, P);
+    return 0;
+}
+
+
+2.Closest Distance:
+==================
+
+#include <iostream>
+#include <cmath>
+using namespace std;
+double BruteForceClosestPair(double x[], double y[], int n) {
+    double d = 999999.99f;
+    int p1 = -1, p2 = -1;
+    int comparisons = 0;
+    cout << "\n--- Brute Force Closest Pair Trace ---\n";
+    for (int i = 0; i < n - 1; i++) {
+        for (int j = i + 1; j < n; j++) {
+            comparisons++;
+            double dx = x[i] - x[j];
+            double dy = y[i] - y[j];
+            double dist = sqrt(dx * dx + dy * dy);
+            cout << "Comparison " << comparisons << ": ";
+            cout << "Distance between P" << i + 1 << "(" << x[i] << "," << y[i] << ") and ";
+            cout << "P" << j + 1 << "(" << x[j] << "," << y[j] << ") = ";
+            cout << dist << endl;
+            if (dist < d) {
+                d = dist;
+                p1 = i;
+                p2 = j;
+                cout << "New Minimum Distance Found\n";
+            }
+            else{
+                cout << "Minimum Distance Not Found\n";
+            }
+        }
+    }
+    cout << "\nClosest Points:\n";
+    cout << "P" << p1 + 1 << " (" << x[p1] << ", " << y[p1] << ")\n";
+    cout << "P" << p2 + 1 << " (" << x[p2] << ", " << y[p2] << ")\n";
+    cout << "Minimum distance = " << d << endl;
+    cout << "Total comparisons = " << comparisons << endl;
+    return d;
+}
+int main() {
+    int n;
+    cout << "Enter number of points: ";
+    cin >> n;
+    double x[n], y[n];
+    cout << "Enter the points (x y):\n";
+    for (int i = 0; i < n; i++) {
+        cin >> x[i] >> y[i];
+    }
+    BruteForceClosestPair(x, y, n);
+    return 0;
+}
