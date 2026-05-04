@@ -1,0 +1,76 @@
+1.Weight:
+========
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
+int n, capacity, maxProfit = 0;
+int weights[100], values[100];
+int currentPath[100], bestPath[100];
+
+double calculateBound(int index, int currentW, int currentV) {
+    double bound = currentV;
+    int remainingW = capacity - currentW;
+
+    for (int i = index; i < n; i++) {
+        if (weights[i] <= remainingW) {
+            remainingW -= weights[i];
+            bound += values[i];
+        } else {
+            bound += values[i] * ((double)remainingW / weights[i]);
+            break;
+        }
+    }
+    return bound;
+}
+
+void solve(int index, int currentW, int currentV) {
+       if (currentV > maxProfit) {
+        maxProfit = currentV;
+        for (int i = 0; i < n; i++) {
+            bestPath[i] = currentPath[i];
+        }
+    }
+
+    if (index == n) return;
+    if (currentW + weights[index] <= capacity) {
+        currentPath[index] = 1;
+        solve(index + 1, currentW + weights[index], currentV + values[index]);
+        currentPath[index] = 0;
+    }
+    if (calculateBound(index + 1, currentW, currentV) > maxProfit) {
+        currentPath[index] = 0;
+        solve(index + 1, currentW, currentV);
+    }
+}
+
+int main() {
+    cout << "Enter number of items: ";
+    cin >> n;
+    cout << "Enter capacity: ";
+    cin >> capacity;
+
+    for (int i = 0; i < n; i++) {
+        cout << "\n--- Item " << i + 1 << " ---" << endl;
+        cout << "Weight: ";
+        cin >> weights[i];
+        cout << "Value: ";
+        cin >> values[i];
+
+        currentPath[i] = 0;
+    }
+
+
+
+    cout << "\nMaximum Profit: " << maxProfit << endl;
+    cout << "Items Included: ";
+    for (int i = 0; i < n; i++) {
+        if (bestPath[i] == 1) {
+            cout << "Item " << i + 1 << " ";
+        }
+    }
+    cout << endl;
+
+    return 0;
+}
