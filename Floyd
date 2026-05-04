@@ -1,0 +1,69 @@
+1.Floyd:
+=======
+
+#include <iostream>
+using namespace std;
+
+void printMatrix(int D[10][10], int n, int step) {
+    cout << "\n D(" << step << ")\n";
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            if (D[i][j] == -1) cout << "-1\t";
+            else cout << D[i][j] << "\t";
+        }
+        cout << endl;
+    }
+}
+
+int main() {
+    int n, edges;
+    int D[10][10];
+
+    cout << "enter no of vertices: ";
+    cin >> n;
+
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            if (i == j) D[i][j] = 0;
+            else D[i][j] = -1;
+        }
+    }
+
+    cout << "enter number of paths: ";
+    cin >> edges;
+
+    for (int i = 0; i < edges; i++) {
+        int u, v, cost;
+        cout << "enter start vertex: ";
+        cin >> u;
+        cout << "enter end vertex: ";
+        cin >> v;
+        cout << "enter cost between " << u << "," << v << ": ";
+        cin >> cost;
+
+        if (u > 0 && u <= n && v > 0 && v <= n) {
+            D[u-1][v-1] = cost;
+        } else {
+            cout << "Invalid vertex!" << endl;
+            i--;
+        }
+    }
+
+    printMatrix(D, n, 0);
+
+    for (int k = 0; k < n; k++) {
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                if (D[i][k] != -1 && D[k][j] != -1) {
+                    int newDist = D[i][k] + D[k][j];
+                    if (D[i][j] == -1 || newDist < D[i][j]) {
+                        D[i][j] = newDist;
+                    }
+                }
+            }
+        }
+        printMatrix(D, n, k + 1);
+    }
+
+    return 0;
+}
