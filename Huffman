@@ -1,0 +1,99 @@
+1.Huffman:
+=========
+
+#include <iostream>
+#include <queue>
+#include <vector>
+
+using namespace std;
+
+class Node {
+public:
+    char data;
+    int freq;
+    Node *left, *right;
+
+    Node(char d, int f) {
+        data = d;
+        freq = f;
+        left = right = NULL;
+    }
+};
+
+class Compare {
+public:
+    bool operator()(Node* l, Node* r) {
+        return l->freq > r->freq;
+    }
+};
+
+class Huffman {
+private:
+    Node* root;
+
+    void printCodes(Node* curr, string code) {
+        if (!curr) return;
+
+        if (curr->data != '$') {
+            cout << curr->data << ": " << code << endl;
+        }
+
+        printCodes(curr->left, code + "0");
+        printCodes(curr->right, code + "1");
+    }
+
+public:
+    Huffman() { root = NULL; }
+
+    void build(char data[], int freq[], int n) {
+        priority_queue<Node*, vector<Node*>, Compare> minHeap;
+
+        for (int i = 0; i < n; i++) {
+            minHeap.push(new Node(data[i], freq[i]));
+        }
+
+        while (minHeap.size() > 1) {
+            Node* left = minHeap.top();  minHeap.pop();
+            Node* right = minHeap.top(); minHeap.pop();
+
+            Node* parent = new Node('$', left->freq + right->freq);
+            parent->left = left;
+            parent->right = right;
+
+            minHeap.push(parent);
+        }
+
+        root = minHeap.top();
+    }
+
+    void display() {
+        printCodes(root, "");
+    }
+};
+
+int main() {
+    int n;
+    cout << "Enter the number of unique characters: ";
+    cin >> n;
+
+    char* chars = new char[n];
+    int* freq = new int[n];
+
+    for (int i = 0; i < n; i++) {
+        cout << "Enter character " << i + 1 << ": ";
+        cin >> chars[i];
+        cout << "Enter frequency for '" << chars[i] << "': ";
+        cin >> freq[i];
+    }
+
+    Huffman h;
+    h.build(chars, freq, n);
+
+    cout << "\nGenerated Huffman Codes:" << endl;
+    h.display();
+
+    delete[] chars;
+    delete[] freq;
+
+    return 0;
+}
